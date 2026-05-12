@@ -1,108 +1,323 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
   <title>Firmcompute Dashboard</title>
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
 
   <style>
 
+    :root {
+
+      --primary-color: #346093;
+      --secondary-color: #74943c;
+
+      --primary-dark: #2d547f;
+      --secondary-dark: #648132;
+    }
+
     body {
+
       font-family: 'DM Sans', sans-serif;
-      background: #f4f6f9;
+
+      background: var(--primary-color);
+
+      min-height: 100vh;
+    }
+
+    .navbar {
+
+      background: white;
+
+      min-height: 58px;
+
+      padding-top: 8px !important;
+      padding-bottom: 8px !important;
+    }
+
+    .navbar-brand img {
+
+      object-fit: contain;
+    }
+
+    .dashboard-container {
+
+      padding: 14px;
+    }
+
+    .card {
+
+      border: none;
+
+      border-radius: 28px;
+
+      box-shadow:
+        0 4px 20px rgba(0,0,0,0.08);
     }
 
     .device-name {
+
       font-weight: 700;
+
       letter-spacing: 0.03em;
+
+      color: var(--primary-color);
     }
 
     .timestamp {
+
       font-family: 'DM Mono', monospace;
+
       font-size: 11px;
+
+      color: #6b7280 !important;
     }
 
     .stat-icon {
+
       font-size: 1.4rem;
     }
 
     .stat-value {
+
       font-size: 1.2rem;
+
       font-weight: 700;
+
       font-family: 'DM Mono', monospace;
+
+      color: var(--primary-color);
     }
 
     .chart-wrap {
+
       position: relative;
+
       width: 100%;
-      height: 120px;
+
+      height: 150px;
+    }
+
+    .btn-primary {
+
+      background:
+        var(--secondary-color);
+
+      border-color:
+        var(--secondary-color);
+
+      font-weight: 600;
+    }
+
+    .btn-primary:hover,
+    .btn-primary:focus {
+
+      background:
+        var(--secondary-dark);
+
+      border-color:
+        var(--secondary-dark);
+    }
+
+    .btn-outline-secondary {
+
+      color:
+        var(--secondary-color);
+
+      border-color:
+        var(--secondary-color);
+
+      font-weight: 600;
+
+      background: white;
+    }
+
+    .btn-outline-secondary:hover,
+    .btn-outline-secondary:focus {
+
+      background:
+        var(--secondary-color);
+
+      border-color:
+        var(--secondary-color);
+
+      color: white;
+    }
+
+    .btn-outline-primary {
+
+      color:
+        var(--secondary-color);
+
+      border-color:
+        var(--secondary-color);
+    }
+
+    .btn-outline-primary:hover,
+    .btn-outline-primary:focus {
+
+      background:
+        var(--secondary-color);
+
+      border-color:
+        var(--secondary-color);
+
+      color: white;
+    }
+
+    .form-control {
+
+      border-radius: 14px;
+
+      height: 48px;
+
+      border: 1px solid #d1d5db;
+    }
+
+    .form-control:focus {
+
+      border-color:
+        var(--secondary-color);
+
+      box-shadow:
+        0 0 0 0.2rem rgba(116,148,60,0.15);
+    }
+
+    .search-btn {
+
+      height: 48px;
+
+      min-width: 120px;
+
+      border-radius: 14px;
+    }
+
+    .search-input {
+
+      font-size: 1rem;
     }
 
     @media (max-width: 768px) {
 
       .chart-wrap {
+
         height: 220px;
       }
 
       .stat-value {
+
         font-size: 1rem;
       }
 
       .timestamp {
+
         font-size: 10px;
       }
 
       .device-name {
+
         word-break: break-all;
+      }
+
+      .navbar-brand img {
+
+        height: 30px !important;
       }
     }
 
   </style>
+
 </head>
 
-<body class="p-2 p-md-4 min-vh-100">
+<body>
 
-<div class="container-fluid px-0">
+<!-- Navbar -->
 
-  <h1 class="fs-5 fw-bold text-dark mb-4">
-    Firmcompute Device Dashboard
-  </h1>
+<nav class="navbar px-3 py-2 shadow-sm">
 
-  <div class="row g-2 mb-4">
+  <div class="container-fluid px-0">
 
-    <div class="col-12 col-md">
+    <a
+      class="navbar-brand d-flex align-items-center m-0"
+      href="#"
+    >
+
+      <img
+        src="logo.svg"
+        alt="Firmcompute Logo"
+        class="img-fluid"
+        style="height:34px;"
+      />
+
+    </a>
+
+  </div>
+
+</nav>
+
+<!-- Main Container -->
+
+<div class="container-fluid dashboard-container">
+
+  <!-- Search Section -->
+
+  <div class="row g-2 mb-4 justify-content-start">
+
+    <div class="col-12 col-md-5 col-lg-4">
+
       <input
         type="text"
         id="mac"
-        class="form-control"
+        class="form-control search-input"
         placeholder="Enter MAC Address"
       />
+
     </div>
 
     <div class="col-6 col-md-auto">
+
       <button
-        class="btn btn-primary fw-semibold w-100"
+        class="btn btn-primary search-btn w-100"
         onclick="searchDevice()"
       >
         Search
       </button>
+
     </div>
 
     <div class="col-6 col-md-auto">
+
       <button
-        class="btn btn-outline-secondary fw-semibold w-100"
+        class="btn btn-outline-secondary search-btn w-100"
         onclick="refreshCurrentDevice()"
       >
         Refresh
       </button>
+
     </div>
 
   </div>
+
+  <!-- Device Cards -->
 
   <div id="card-container"></div>
 
@@ -111,10 +326,15 @@
 <script>
 
 const chartInstances = {};
+
 let currentMac = null;
 
+// ─────────────────────────────────────────────
+
 function toTime(str) {
+
   return new Date(str).toLocaleTimeString([], {
+
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit'
@@ -122,7 +342,9 @@ function toTime(str) {
 }
 
 function toDateTime(str) {
+
   return new Date(str).toLocaleString([], {
+
     month: 'numeric',
     day: 'numeric',
     year: 'numeric',
@@ -132,234 +354,546 @@ function toDateTime(str) {
   });
 }
 
+// ─────────────────────────────────────────────
+
 function yAxis(values, minSpan) {
-  const lo   = Math.min(...values);
-  const hi   = Math.max(...values);
-  const mid  = (lo + hi) / 2;
-  const half = Math.max((hi - lo) / 2, minSpan / 2);
-  const pad  = Math.max(half * 0.18, 0.05);
+
+  const lo =
+    Math.min(...values);
+
+  const hi =
+    Math.max(...values);
+
+  const mid =
+    (lo + hi) / 2;
+
+  const half =
+    Math.max((hi - lo) / 2, minSpan / 2);
+
+  const pad =
+    Math.max(half * 0.18, 0.05);
+
   return {
-    min: parseFloat((mid - half - pad).toFixed(3)),
-    max: parseFloat((mid + half + pad).toFixed(3)),
+
+    min:
+      parseFloat((mid - half - pad).toFixed(3)),
+
+    max:
+      parseFloat((mid + half + pad).toFixed(3)),
   };
 }
 
-function makeChart(canvasId, labels, values, borderColor, gradTop, gradBot, minSpan, unit) {
+// ─────────────────────────────────────────────
+
+function makeChart(
+  canvasId,
+  labels,
+  values,
+  borderColor,
+  fillColor,
+  minSpan,
+  unit
+) {
 
   if (chartInstances[canvasId]) {
+
     chartInstances[canvasId].destroy();
+
     delete chartInstances[canvasId];
   }
 
-  const canvas = document.getElementById(canvasId);
-  const ctx = canvas.getContext('2d');
+  const canvas =
+    document.getElementById(canvasId);
 
-  const grad = ctx.createLinearGradient(0, 0, 0, canvas.offsetHeight || 120);
-  grad.addColorStop(0, gradTop);
-  grad.addColorStop(1, gradBot);
+  const ctx =
+    canvas.getContext('2d');
 
-  const { min, max } = yAxis(values, minSpan);
+  const { min, max } =
+    yAxis(values, minSpan);
 
-  chartInstances[canvasId] = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        data: values,
-        borderColor,
-        backgroundColor: grad,
-        fill: true,
-        tension: 0.4,
-        pointRadius: 3,
-        pointBackgroundColor: borderColor,
-        pointBorderColor: '#fff',
-        pointBorderWidth: 1.5,
-        pointHoverRadius: 5,
-        borderWidth: 2,
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: c => ` ${c.parsed.y.toFixed(2)} ${unit}`
+  chartInstances[canvasId] =
+    new Chart(ctx, {
+
+      type: 'line',
+
+      data: {
+
+        labels,
+
+        datasets: [{
+
+          data: values,
+
+          borderColor,
+
+          backgroundColor: fillColor,
+
+          fill: true,
+
+          tension: 0.4,
+
+          pointRadius: 3,
+
+          pointBackgroundColor:
+            borderColor,
+
+          pointBorderColor:
+            '#fff',
+
+          pointBorderWidth: 1.5,
+
+          pointHoverRadius: 5,
+
+          borderWidth: 2,
+        }]
+      },
+
+      options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        animation: false,
+
+        layout: {
+
+          padding: {
+
+            left: 10,
+            right: 10
+          }
+        },
+
+        plugins: {
+
+          legend: {
+            display: false
+          },
+
+          tooltip: {
+
+            callbacks: {
+
+              label:
+                c =>
+                  ` ${c.parsed.y.toFixed(2)} ${unit}`
+            }
+          }
+        },
+
+        scales: {
+
+          x: {
+
+            ticks: {
+
+              maxTicksLimit: 10,
+
+              autoSkip: true,
+
+              maxRotation: 0,
+
+              padding: 8,
+
+              font: {
+                size: 10,
+                family: 'DM Mono'
+              },
+
+              color: '#9ca3af'
+            },
+
+            grid: {
+              display: false
+            },
+
+            border: {
+              display: false
+            }
+          },
+
+          y: {
+
+            min,
+            max,
+
+            ticks: {
+
+              padding: 10,
+
+              font: {
+                size: 10,
+                family: 'DM Mono'
+              },
+
+              color: '#9ca3af',
+
+              maxTicksLimit: 5,
+
+              callback:
+                v => v.toFixed(2)
+            },
+
+            grid: {
+              color: '#f3f4f6'
+            },
+
+            border: {
+              display: false
+            }
           }
         }
-      },
-      scales: {
-        x: {
-          ticks: {
-            maxTicksLimit: 10,
-            autoSkip: true,
-            maxRotation: 0,
-            font: { size: 10, family: 'DM Mono' },
-            color: '#9ca3af'
-          },
-          grid: { display: false },
-          border: { display: false }
-        },
-        y: {
-          min,
-          max,
-          ticks: {
-            font: { size: 10, family: 'DM Mono' },
-            color: '#9ca3af',
-            maxTicksLimit: 5,
-            callback: v => v.toFixed(2)
-          },
-          grid: { color: '#f3f4f6' },
-          border: { display: false }
-        }
       }
-    }
-  });
+    });
 }
 
+// ─────────────────────────────────────────────
+
 function clearCard() {
+
   Object.keys(chartInstances).forEach(id => {
+
     chartInstances[id].destroy();
+
     delete chartInstances[id];
   });
-  document.getElementById('card-container').innerHTML = '';
+
+  document.getElementById(
+    'card-container'
+  ).innerHTML = '';
 }
+
+// ─────────────────────────────────────────────
 
 function renderCard(mac, data) {
 
   clearCard();
 
-  const safeId = mac.replace(/[^a-zA-Z0-9]/g, '');
-  const tempId = `chart-temp-${safeId}`;
-  const humId  = `chart-hum-${safeId}`;
+  const safeId =
+    mac.replace(/[^a-zA-Z0-9]/g, '');
 
-  const latest  = data[data.length - 1];
-  const extRows = data.filter(r => r.temperature != null);
-  const intRows = data.filter(r => r.internal_temperature != null);
+  const tempId =
+    `chart-temp-${safeId}`;
 
-  const hasExt  = extRows.length > 0;
-  const hasInt  = !hasExt && intRows.length > 0;
-  const hasHum  = data.some(r => r.humidity != null);
-  const hasVolt = data.some(r => r.battery_voltage != null);
+  const humId =
+    `chart-hum-${safeId}`;
 
-  const curTemp = hasExt ? latest.temperature
-                : hasInt ? latest.internal_temperature : null;
-  const curHum  = hasHum  ? latest.humidity        : null;
-  const curVolt = hasVolt ? latest.battery_voltage : null;
+  const latest =
+    data[data.length - 1];
+
+  const extRows =
+    data.filter(r =>
+      r.temperature != null
+    );
+
+  const intRows =
+    data.filter(r =>
+      r.internal_temperature != null
+    );
+
+  const hasExt =
+    extRows.length > 0;
+
+  const hasInt =
+    !hasExt && intRows.length > 0;
+
+  const hasHum =
+    data.some(r =>
+      r.humidity != null
+    );
+
+  const hasVolt =
+    data.some(r =>
+      r.battery_voltage != null
+    );
+
+  const curTemp =
+    hasExt
+      ? latest.temperature
+      : hasInt
+      ? latest.internal_temperature
+      : null;
+
+  const curHum =
+    hasHum
+      ? latest.humidity
+      : null;
+
+  const curVolt =
+    hasVolt
+      ? latest.battery_voltage
+      : null;
 
   let statsHTML = '';
 
-  if (curTemp != null) statsHTML += `
-    <div class="d-flex align-items-center gap-2">
-      <span class="stat-icon">🌡️</span>
-      <span class="stat-value">${curTemp.toFixed(2)}&deg;C</span>
-    </div>`;
+  if (curTemp != null) {
 
-  if (curHum != null) statsHTML += `
-    <div class="d-flex align-items-center gap-2">
-      <span class="stat-icon">💧</span>
-      <span class="stat-value">${curHum.toFixed(2)}%</span>
-    </div>`;
+    statsHTML += `
+      <div class="d-flex align-items-center gap-2">
+        <span class="stat-icon">🌡️</span>
+        <span class="stat-value">
+          ${curTemp.toFixed(2)}&deg;C
+        </span>
+      </div>
+    `;
+  }
 
-  if (curVolt != null) statsHTML += `
-    <div class="d-flex align-items-center gap-2">
-      <span class="stat-icon">🔋</span>
-      <span class="stat-value">${curVolt.toFixed(2)}V</span>
-    </div>`;
+  if (curHum != null) {
+
+    statsHTML += `
+      <div class="d-flex align-items-center gap-2">
+        <span class="stat-icon">💧</span>
+        <span class="stat-value">
+          ${curHum.toFixed(2)}%
+        </span>
+      </div>
+    `;
+  }
+
+  if (curVolt != null) {
+
+    statsHTML += `
+      <div class="d-flex align-items-center gap-2">
+        <span class="stat-icon">🔋</span>
+        <span class="stat-value">
+          ${curVolt.toFixed(2)}V
+        </span>
+      </div>
+    `;
+  }
 
   let chartsHTML = '';
-  if (hasExt || hasInt) chartsHTML += `<div class="chart-wrap mb-2"><canvas id="${tempId}"></canvas></div>`;
-  if (hasHum)           chartsHTML += `<div class="chart-wrap"><canvas id="${humId}"></canvas></div>`;
 
-  const card = document.createElement('div');
-  card.className = 'card shadow-sm border-0 rounded-4 p-3 mb-4';
+  if (hasExt || hasInt) {
+
+    chartsHTML += `
+      <div class="chart-wrap mb-3">
+        <canvas id="${tempId}"></canvas>
+      </div>
+    `;
+  }
+
+  if (hasHum) {
+
+    chartsHTML += `
+      <div class="chart-wrap">
+        <canvas id="${humId}"></canvas>
+      </div>
+    `;
+  }
+
+  const card =
+    document.createElement('div');
+
+  card.className =
+    'card p-3 p-md-4 mb-4';
+
   card.innerHTML = `
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 mb-2">
-      <span class="device-name fs-6">${mac}</span>
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 mb-3">
+
+      <span class="device-name fs-4">
+        ${mac}
+      </span>
+
       <div class="d-flex flex-wrap align-items-center gap-2">
-        <button class="btn btn-sm btn-outline-primary" onclick="openHistoryPage('${mac}')">
+
+        <button
+          class="btn btn-sm btn-outline-primary"
+          onclick="openHistoryPage('${mac}')"
+        >
           📅 History
         </button>
-        <span class="timestamp text-secondary">${toDateTime(latest.received_at)}</span>
+
+        <span class="timestamp">
+          ${toDateTime(latest.received_at)}
+        </span>
+
       </div>
+
     </div>
-    <div class="d-flex flex-wrap align-items-center gap-3 gap-md-4 mb-3">${statsHTML}</div>
+
+    <div class="d-flex flex-wrap align-items-center gap-4 mb-4">
+      ${statsHTML}
+    </div>
+
     ${chartsHTML}
   `;
 
-  document.getElementById('card-container').appendChild(card);
+  document
+    .getElementById('card-container')
+    .appendChild(card);
 
   requestAnimationFrame(() => {
 
     if (hasExt || hasInt) {
-      const rows   = (hasExt ? extRows : intRows).slice(-10);
-      const field  = hasExt ? 'temperature' : 'internal_temperature';
-      const labels = rows.map(r => toTime(r.received_at));
-      const values = rows.map(r => r[field]);
-      makeChart(tempId, labels, values, '#f43f5e', 'rgba(251,113,133,0.6)', 'rgba(254,205,211,0.04)', 0.5, '°C');
+
+      const rows =
+        (hasExt ? extRows : intRows)
+        .slice(-10);
+
+      const field =
+        hasExt
+          ? 'temperature'
+          : 'internal_temperature';
+
+      const labels =
+        rows.map(r =>
+          toTime(r.received_at)
+        );
+
+      const values =
+        rows.map(r =>
+          r[field]
+        );
+
+      makeChart(
+        tempId,
+        labels,
+        values,
+        '#f43f5e',
+        'rgba(251,113,133,0.18)',
+        0.5,
+        '°C'
+      );
     }
 
     if (hasHum) {
-      const humRows = data.filter(r => r.humidity != null).slice(-10);
-      const labels  = humRows.map(r => toTime(r.received_at));
-      const values  = humRows.map(r => r.humidity);
-      makeChart(humId, labels, values, '#3b82f6', 'rgba(96,165,250,0.55)', 'rgba(219,234,254,0.04)', 0.5, '%');
+
+      const humRows =
+        data.filter(r =>
+          r.humidity != null
+        ).slice(-10);
+
+      const labels =
+        humRows.map(r =>
+          toTime(r.received_at)
+        );
+
+      const values =
+        humRows.map(r =>
+          r.humidity
+        );
+
+      makeChart(
+        humId,
+        labels,
+        values,
+        '#3b82f6',
+        'rgba(96,165,250,0.18)',
+        0.5,
+        '%'
+      );
     }
   });
 }
 
+// ─────────────────────────────────────────────
+
 async function searchDevice() {
 
-  const mac = document.getElementById('mac').value.trim();
+  const mac =
+    document.getElementById('mac')
+    .value.trim();
+
   currentMac = mac;
 
-  if (!mac) { alert('Please enter a MAC address.'); return; }
+  if (!mac) {
 
-  // ── Save to sessionStorage so we can restore after navigating back ──
-  sessionStorage.setItem('lastMac', mac);
-
-  let data;
-  try {
-    const res = await fetch(
-      `https://fc-dashboard-worker.satyaramsl72.workers.dev/device/${mac}`
+    alert(
+      'Please enter a MAC address.'
     );
-    data = await res.json();
-  } catch (e) {
-    alert('Network error fetching device data.');
+
     return;
   }
 
-  if (!Array.isArray(data) || !data.length) {
-    alert('No data found for this device.');
+  sessionStorage.setItem(
+    'lastMac',
+    mac
+  );
+
+  let data;
+
+  try {
+
+    const res = await fetch(
+      `https://fc-dashboard-worker.satyaramsl72.workers.dev/device/${mac}`
+    );
+
+    data = await res.json();
+
+  } catch (e) {
+
+    alert(
+      'Network error fetching device data.'
+    );
+
+    return;
+  }
+
+  if (
+    !Array.isArray(data) ||
+    !data.length
+  ) {
+
+    alert(
+      'No data found for this device.'
+    );
+
     return;
   }
 
   data.reverse();
+
   renderCard(mac, data);
 }
 
+// ─────────────────────────────────────────────
+
 async function refreshCurrentDevice() {
+
   if (!currentMac) return;
-  document.getElementById("mac").value = currentMac;
+
+  document.getElementById("mac").value =
+    currentMac;
+
   await searchDevice();
 }
 
+// ─────────────────────────────────────────────
+
 function openHistoryPage(mac) {
-  window.location.href = `history.html?mac=${mac}`;
+
+  window.location.href =
+    `history.html?mac=${mac}`;
 }
 
+// ─────────────────────────────────────────────
+
 setInterval(() => {
-  if (currentMac) refreshCurrentDevice();
+
+  if (currentMac) {
+
+    refreshCurrentDevice();
+  }
+
 }, 60000);
 
-// ── On load: restore last searched MAC if returning from history ──
+// ─────────────────────────────────────────────
+
 window.addEventListener('load', () => {
-  const saved = sessionStorage.getItem('lastMac');
+
+  const saved =
+    sessionStorage.getItem('lastMac');
+
   if (saved) {
-    document.getElementById('mac').value = saved;
+
+    document.getElementById('mac').value =
+      saved;
+
     currentMac = saved;
+
     searchDevice();
   }
 });
