@@ -17,8 +17,13 @@
     rel="stylesheet"
   />
 
-  <!-- ECharts instead of Chart.js -->
+  <!-- ECharts -->
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+
+  <!-- jsPDF -->
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.31/dist/jspdf.plugin.autotable.min.js"></script>
 
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
@@ -28,101 +33,151 @@
   <style>
 
     :root {
+
       --primary-color: #346093;
       --secondary-color: #74943c;
+
       --primary-dark: #2d547f;
       --secondary-dark: #648132;
     }
 
     body {
+
       background: var(--primary-color);
+
       font-family: 'DM Sans', sans-serif;
+
       min-height: 100vh;
     }
 
     .navbar {
+
       background: white;
+
       min-height: 58px;
+
       padding-top: 8px !important;
       padding-bottom: 8px !important;
     }
 
     .navbar-brand img {
+
       object-fit: contain;
     }
 
     .page-container {
+
       padding: 14px;
     }
 
-    /* ECharts container — needs explicit height */
     .chart-container {
+
       width: 100%;
+
       height: 320px;
     }
 
     .card {
+
       border: none;
+
       border-radius: 28px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+
+      box-shadow:
+        0 4px 20px rgba(0,0,0,0.08);
     }
 
     .date-picker-wrap {
+
       cursor: pointer;
+
       min-width: 220px;
+
       border-radius: 14px;
     }
 
     .date-picker-wrap input {
+
       outline: none;
+
       cursor: pointer;
     }
 
     .btn-primary {
+
       background: var(--secondary-color);
+
       border-color: var(--secondary-color);
+
       font-weight: 600;
     }
 
     .btn-primary:hover,
     .btn-primary:focus {
+
       background: var(--secondary-dark);
+
       border-color: var(--secondary-dark);
     }
 
     .btn-outline-secondary {
+
       color: var(--secondary-color);
+
       border-color: var(--secondary-color);
+
       font-weight: 600;
+
       background: white;
     }
 
     .btn-outline-secondary:hover,
     .btn-outline-secondary:focus {
+
       background: var(--secondary-color);
+
       border-color: var(--secondary-color);
+
       color: white;
     }
 
     .chart-title {
+
       color: var(--primary-color);
+
       font-weight: 700;
     }
 
     #title {
+
       color: white;
+
       word-break: break-all;
     }
 
-    .timestamp {
-      font-family: 'DM Mono', monospace;
-    }
-
     @media (max-width: 768px) {
-      .chart-container   { height: 240px; }
-      .date-picker-wrap  { width: 100%; min-width: unset; }
-      #title             { font-size: 1.05rem; }
-      .navbar-brand img  { height: 30px !important; }
+
+      .chart-container {
+
+        height: 240px;
+      }
+
+      .date-picker-wrap {
+
+        width: 100%;
+
+        min-width: unset;
+      }
+
+      #title {
+
+        font-size: 1.05rem;
+      }
+
+      .navbar-brand img {
+
+        height: 30px !important;
+      }
     }
 
   </style>
@@ -132,57 +187,145 @@
 <body>
 
 <!-- Navbar -->
+
 <nav class="navbar px-3 py-2 shadow-sm">
+
   <div class="container-fluid px-0">
-    <a class="navbar-brand d-flex align-items-center m-0" href="#">
-      <img src="logo.svg" alt="Firmcompute Logo" class="img-fluid" style="height:34px;" />
+
+    <a
+      class="navbar-brand d-flex align-items-center m-0"
+      href="#"
+    >
+
+      <img
+        src="logo.svg"
+        alt="Firmcompute Logo"
+        class="img-fluid"
+        style="height:34px;"
+      />
+
     </a>
+
   </div>
+
 </nav>
 
 <!-- Main Container -->
+
 <div class="container-fluid page-container">
 
   <!-- Header -->
+
   <div class="d-flex flex-column gap-3 mb-4">
 
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
 
       <!-- Buttons -->
+
       <div class="d-flex flex-wrap align-items-center gap-2">
-        <button class="btn btn-outline-secondary" onclick="goBack()">← Back</button>
-        <button class="btn btn-primary"           onclick="loadHistory()">↻ Refresh</button>
+
+        <button
+          class="btn btn-outline-secondary"
+          onclick="goBack()"
+        >
+          ← Back
+        </button>
+
+        <button
+          class="btn btn-primary"
+          onclick="loadHistory()"
+        >
+          ↻ Refresh
+        </button>
+
+        <button
+          class="btn btn-outline-secondary"
+          onclick="downloadPDF()"
+        >
+          ⬇ PDF
+        </button>
+
       </div>
 
       <!-- Date Picker -->
+
       <div
         class="date-picker-wrap border bg-white px-3 py-2 d-flex align-items-center shadow-sm"
         onclick="openDatePicker()"
       >
-        <input type="date" id="datePicker" class="border-0 bg-transparent w-100" />
+
+        <input
+          type="date"
+          id="datePicker"
+          class="border-0 bg-transparent w-100"
+        />
+
       </div>
 
     </div>
 
-    <h3 id="title" class="fw-bold mb-0"></h3>
+    <h3
+      id="title"
+      class="fw-bold mb-0"
+    ></h3>
 
   </div>
 
   <!-- Messages -->
-  <div id="loadingMsg" class="alert alert-info d-none">Loading...</div>
-  <div id="errorMsg"   class="alert alert-danger d-none"></div>
-  <div id="emptyMsg"   class="alert alert-warning d-none">No data found for this date.</div>
 
-  <!-- Temperature Card -->
-  <div class="card p-3 p-md-4 mb-4" id="tempCard">
-    <h5 class="chart-title mb-4">🌡️ Temperature</h5>
-    <div class="chart-container" id="tempChart"></div>
+  <div
+    id="loadingMsg"
+    class="alert alert-info d-none"
+  >
+    Loading...
   </div>
 
-  <!-- Humidity Card -->
-  <div class="card p-3 p-md-4" id="humidityCard">
-    <h5 class="chart-title mb-4">💧 Humidity</h5>
-    <div class="chart-container" id="humChart"></div>
+  <div
+    id="errorMsg"
+    class="alert alert-danger d-none"
+  ></div>
+
+  <div
+    id="emptyMsg"
+    class="alert alert-warning d-none"
+  >
+    No data found for this date.
+  </div>
+
+  <!-- Temperature -->
+
+  <div
+    class="card p-3 p-md-4 mb-4"
+    id="tempCard"
+  >
+
+    <h5 class="chart-title mb-4">
+      🌡️ Temperature
+    </h5>
+
+    <div
+      class="chart-container"
+      id="tempChart"
+    ></div>
+
+  </div>
+
+  <!-- Humidity -->
+
+  <div
+    class="card p-3 p-md-4"
+    id="humidityCard"
+  >
+
+    <h5 class="chart-title mb-4">
+      💧 Humidity
+    </h5>
+
+    <div
+      class="chart-container"
+      id="humChart"
+    ></div>
+
   </div>
 
 </div>
@@ -193,144 +336,261 @@
 // URL PARAMS
 // ─────────────────────────────────────────────
 
-const params = new URLSearchParams(window.location.search);
-const mac    = params.get("mac") || "";
-document.getElementById("title").innerText = `History – ${mac}`;
+const params =
+  new URLSearchParams(window.location.search);
 
-// ECharts instances
+const mac =
+  params.get("mac") || "";
+
+document.getElementById("title").innerText =
+  `History – ${mac}`;
+
+// ─────────────────────────────────────────────
+
 let tempChartInst = null;
+
 let humChartInst  = null;
+
+let currentFilteredData = [];
 
 // ─────────────────────────────────────────────
 // TIME HELPERS
 // ─────────────────────────────────────────────
 
 function toMs(ts) {
-  return ts < 1_000_000_000_000 ? ts * 1000 : ts;
+
+  return ts < 1_000_000_000_000
+    ? ts * 1000
+    : ts;
 }
 
 function toTime(ts) {
-  return new Date(toMs(ts)).toLocaleTimeString([], {
-    hour: '2-digit', minute: '2-digit', second: '2-digit'
-  });
+
+  return new Date(toMs(ts))
+    .toLocaleTimeString([], {
+
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
 }
 
 function toDateStr(ts) {
-  const d  = new Date(toMs(ts));
-  const yy = d.getFullYear();
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const dd = String(d.getDate()).padStart(2, "0");
-  return `${yy}-${mm}-${dd}`;
+
+  const d =
+    new Date(toMs(ts));
+
+  const year =
+    d.getFullYear();
+
+  const month =
+    String(d.getMonth() + 1)
+    .padStart(2, "0");
+
+  const day =
+    String(d.getDate())
+    .padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
 }
 
 // ─────────────────────────────────────────────
-// Y-AXIS RANGE
+// Y AXIS RANGE
 // ─────────────────────────────────────────────
 
 function yAxisRange(values, minSpan) {
-  const lo   = Math.min(...values);
-  const hi   = Math.max(...values);
-  const mid  = (lo + hi) / 2;
-  const half = Math.max((hi - lo) / 2, minSpan / 2);
-  const pad  = Math.max(half * 0.18, 0.05);
+
+  const lo =
+    Math.min(...values);
+
+  const hi =
+    Math.max(...values);
+
+  const mid =
+    (lo + hi) / 2;
+
+  const half =
+    Math.max((hi - lo) / 2, minSpan / 2);
+
+  const pad =
+    Math.max(half * 0.18, 0.05);
+
   return {
-    min: parseFloat((mid - half - pad).toFixed(3)),
-    max: parseFloat((mid + half + pad).toFixed(3)),
+
+    min:
+      parseFloat((mid - half - pad).toFixed(3)),
+
+    max:
+      parseFloat((mid + half + pad).toFixed(3)),
   };
 }
 
 // ─────────────────────────────────────────────
-// MAKE ECHARTS CHART
+// CHART CREATOR
 // ─────────────────────────────────────────────
 
-function makeChart(divId, labels, values, lineColor, gradColorStart, gradColorEnd, minSpan, unit) {
+function makeChart(
+  divId,
+  labels,
+  values,
+  lineColor,
+  fillColor,
+  minSpan,
+  unit
+) {
 
-  const dom = document.getElementById(divId);
-  const chart = echarts.init(dom);
+  const dom =
+    document.getElementById(divId);
 
-  const { min, max } = yAxisRange(values, minSpan);
+  const chart =
+    echarts.init(dom);
 
-  const option = {
+  const { min, max } =
+    yAxisRange(values, minSpan);
+
+  chart.setOption({
+
     animation: false,
+
     grid: {
+
       top: 16,
+
       bottom: 36,
-      left: 56,
-      right: 20,
-      containLabel: false
+
+      left: 70,
+
+      right: 20
     },
+
     tooltip: {
+
       trigger: 'axis',
+
       formatter: params => {
+
         const p = params[0];
-        return `${p.axisValue}<br/>${p.marker} ${parseFloat(p.value).toFixed(2)} ${unit}`;
-      },
-      backgroundColor: '#fff',
-      borderColor: '#e5e7eb',
-      textStyle: { color: '#374151', fontFamily: 'DM Mono', fontSize: 12 }
+
+        return `
+          ${p.axisValue}<br/>
+          ${p.marker}
+          ${parseFloat(p.value).toFixed(2)}
+          ${unit}
+        `;
+      }
     },
+
     xAxis: {
+
       type: 'category',
+
       data: labels,
+
       boundaryGap: false,
-      axisLine:  { show: false },
-      axisTick:  { show: false },
-      splitLine: { show: false },
+
+      axisLine: {
+        show: false
+      },
+
+      axisTick: {
+        show: false
+      },
+
+      splitLine: {
+        show: false
+      },
+
       axisLabel: {
+
         fontFamily: 'DM Mono',
+
         fontSize: 10,
+
         color: '#9ca3af',
-        interval: 'auto',
-        rotate: 0,
+
         margin: 10
       }
     },
+
     yAxis: {
+
       type: 'value',
+
       min,
+
       max,
-      splitLine: { lineStyle: { color: '#f3f4f6' } },
-      axisLine:  { show: false },
-      axisTick:  { show: false },
+
+      axisLine: {
+        show: false
+      },
+
+      axisTick: {
+        show: false
+      },
+
+      splitLine: {
+
+        lineStyle: {
+          color: '#f3f4f6'
+        }
+      },
+
       axisLabel: {
+
         fontFamily: 'DM Mono',
+
         fontSize: 10,
+
         color: '#9ca3af',
+
         margin: 12,
-        formatter: v => v.toFixed(2)
+
+        formatter:
+          v => v.toFixed(2)
       }
     },
+
     series: [{
+
       type: 'line',
+
       data: values,
+
       smooth: 0.4,
+
       showSymbol: true,
+
       symbol: 'circle',
-      symbolSize: 6,
-      itemStyle: {
-        color: lineColor,
-        borderColor: '#fff',
-        borderWidth: 1.5
-      },
+
+      symbolSize: 5,
+
       lineStyle: {
+
         color: lineColor,
+
         width: 2
       },
-      areaStyle: {
-        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-          { offset: 0, color: gradColorStart },
-          { offset: 1, color: gradColorEnd }
-        ])
+
+      itemStyle: {
+
+        color: lineColor,
+
+        borderColor: '#fff',
+
+        borderWidth: 1
       },
-      emphasis: {
-        scale: true,
-        itemStyle: { shadowBlur: 6, shadowColor: lineColor }
+
+      areaStyle: {
+
+        color: fillColor
       }
     }]
-  };
+  });
 
-  chart.setOption(option);
-  window.addEventListener('resize', () => chart.resize());
+  window.addEventListener(
+    'resize',
+    () => chart.resize()
+  );
 
   return chart;
 }
@@ -340,17 +600,42 @@ function makeChart(divId, labels, values, lineColor, gradColorStart, gradColorEn
 // ─────────────────────────────────────────────
 
 function openDatePicker() {
-  const input = document.getElementById("datePicker");
-  if (input.showPicker) { input.showPicker(); } else { input.focus(); input.click(); }
+
+  const input =
+    document.getElementById("datePicker");
+
+  if (input.showPicker) {
+
+    input.showPicker();
+
+  } else {
+
+    input.focus();
+    input.click();
+  }
 }
 
 function goBack() {
-  window.location.href = "index.html";
+
+  window.location.href =
+    "index.html";
 }
 
 function destroyCharts() {
-  if (tempChartInst) { tempChartInst.dispose(); tempChartInst = null; }
-  if (humChartInst)  { humChartInst.dispose();  humChartInst  = null; }
+
+  if (tempChartInst) {
+
+    tempChartInst.dispose();
+
+    tempChartInst = null;
+  }
+
+  if (humChartInst) {
+
+    humChartInst.dispose();
+
+    humChartInst = null;
+  }
 }
 
 // ─────────────────────────────────────────────
@@ -359,45 +644,76 @@ function destroyCharts() {
 
 async function loadHistory() {
 
-  const selectedDate = document.getElementById("datePicker").value;
+  const selectedDate =
+    document.getElementById("datePicker").value;
 
-  document.getElementById("loadingMsg").classList.remove("d-none");
-  document.getElementById("errorMsg").classList.add("d-none");
-  document.getElementById("emptyMsg").classList.add("d-none");
+  document.getElementById("loadingMsg")
+    .classList.remove("d-none");
+
+  document.getElementById("errorMsg")
+    .classList.add("d-none");
+
+  document.getElementById("emptyMsg")
+    .classList.add("d-none");
 
   let data;
+
   try {
+
     const res = await fetch(
       `https://fc-dashboard-worker.satyaramsl72.workers.dev/device/${mac}`
     );
+
     data = await res.json();
+
   } catch (e) {
-    document.getElementById("loadingMsg").classList.add("d-none");
-    const el = document.getElementById("errorMsg");
-    el.textContent = `Network error: ${e.message}`;
+
+    document.getElementById("loadingMsg")
+      .classList.add("d-none");
+
+    const el =
+      document.getElementById("errorMsg");
+
+    el.textContent =
+      `Network error: ${e.message}`;
+
     el.classList.remove("d-none");
+
     return;
   }
 
-  document.getElementById("loadingMsg").classList.add("d-none");
+  document.getElementById("loadingMsg")
+    .classList.add("d-none");
 
   if (!Array.isArray(data) || data.length === 0) {
-    document.getElementById("emptyMsg").classList.remove("d-none");
+
+    document.getElementById("emptyMsg")
+      .classList.remove("d-none");
+
     return;
   }
 
-  // Worker returns newest-first → reverse to oldest-first for charts
   data.reverse();
 
   if (selectedDate) {
-    data = data.filter(row => toDateStr(row.received_at) === selectedDate);
+
+    data = data.filter(
+      row =>
+        toDateStr(row.received_at) === selectedDate
+    );
   }
 
   if (data.length === 0) {
-    document.getElementById("emptyMsg").classList.remove("d-none");
+
+    document.getElementById("emptyMsg")
+      .classList.remove("d-none");
+
     destroyCharts();
+
     return;
   }
+
+  currentFilteredData = data;
 
   renderCharts(data);
 }
@@ -410,59 +726,350 @@ function renderCharts(data) {
 
   destroyCharts();
 
-  const extRows = data.filter(r => r.temperature          != null && !isNaN(r.temperature));
-  const intRows = data.filter(r => r.internal_temperature != null && !isNaN(r.internal_temperature));
-  const humRows = data.filter(r => r.humidity             != null && !isNaN(r.humidity));
+  const extRows =
+    data.filter(r =>
+      r.temperature != null &&
+      !isNaN(r.temperature)
+    );
 
-  const useExternal = extRows.length > 0;
-  const tempRows    = useExternal ? extRows : intRows;
-  const tempField   = useExternal ? "temperature" : "internal_temperature";
+  const intRows =
+    data.filter(r =>
+      r.internal_temperature != null &&
+      !isNaN(r.internal_temperature)
+    );
 
-  // ── Temperature ──────────────────────────────────
+  const humRows =
+    data.filter(r =>
+      r.humidity != null &&
+      !isNaN(r.humidity)
+    );
+
+  const useExternal =
+    extRows.length > 0;
+
+  const tempRows =
+    useExternal ? extRows : intRows;
+
+  const tempField =
+    useExternal
+      ? "temperature"
+      : "internal_temperature";
+
+  // TEMP
 
   if (tempRows.length > 0) {
-    document.getElementById("tempCard").style.display = "block";
 
-    const labels = tempRows.map(r => toTime(r.received_at));
-    const values = tempRows.map(r => r[tempField]);
+    document.getElementById("tempCard")
+      .style.display = "block";
+
+    const labels =
+      tempRows.map(r =>
+        toTime(r.received_at)
+      );
+
+    const values =
+      tempRows.map(r =>
+        r[tempField]
+      );
 
     tempChartInst = makeChart(
-      'tempChart', labels, values,
+      'tempChart',
+      labels,
+      values,
       '#f43f5e',
-      'rgba(251,113,133,0.55)',
-      'rgba(254,205,211,0.02)',
-      0.5, '°C'
+      'rgba(251,113,133,0.18)',
+      0.5,
+      '°C'
     );
+
   } else {
-    document.getElementById("tempCard").style.display = "none";
+
+    document.getElementById("tempCard")
+      .style.display = "none";
   }
 
-  // ── Humidity ─────────────────────────────────────
+  // HUMIDITY
 
   if (humRows.length > 0) {
-    document.getElementById("humidityCard").style.display = "block";
 
-    const labels = humRows.map(r => toTime(r.received_at));
-    const values = humRows.map(r => r.humidity);
+    document.getElementById("humidityCard")
+      .style.display = "block";
+
+    const labels =
+      humRows.map(r =>
+        toTime(r.received_at)
+      );
+
+    const values =
+      humRows.map(r =>
+        r.humidity
+      );
 
     humChartInst = makeChart(
-      'humChart', labels, values,
+      'humChart',
+      labels,
+      values,
       '#3b82f6',
-      'rgba(96,165,250,0.50)',
-      'rgba(219,234,254,0.02)',
-      0.5, '%'
+      'rgba(96,165,250,0.18)',
+      0.5,
+      '%'
     );
+
   } else {
-    document.getElementById("humidityCard").style.display = "none";
+
+    document.getElementById("humidityCard")
+      .style.display = "none";
   }
+}
+
+// ─────────────────────────────────────────────
+// PDF DOWNLOAD
+// ─────────────────────────────────────────────
+
+async function downloadPDF() {
+
+  if (!currentFilteredData.length) {
+
+    alert("No data available.");
+
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+
+  // compression enabled
+  const doc =
+    new jsPDF({
+
+      orientation: "p",
+
+      unit: "mm",
+
+      format: "a4",
+
+      compress: true
+    });
+
+  const selectedDate =
+    document.getElementById("datePicker").value;
+
+  doc.setFont("helvetica", "bold");
+
+  doc.setFontSize(16);
+
+  doc.setTextColor(52, 96, 147);
+
+  doc.text(
+    "Firmcompute Device History Report",
+    14,
+    16
+  );
+
+  doc.setFontSize(10);
+
+  doc.setTextColor(80);
+
+  doc.text(`Device: ${mac}`, 14, 24);
+
+  doc.text(`Date: ${selectedDate}`, 14, 30);
+
+  let y = 38;
+
+  // TEMP GRAPH
+
+  if (tempChartInst) {
+
+    const tempCanvas =
+      tempChartInst.getRenderedCanvas({
+
+        pixelRatio: 1,
+
+        backgroundColor: '#ffffff'
+      });
+
+    const tempImg =
+      tempCanvas.toDataURL(
+        "image/jpeg",
+        0.55
+      );
+
+    doc.setFontSize(12);
+
+    doc.setTextColor(52, 96, 147);
+
+    doc.text("Temperature Graph", 14, y);
+
+    y += 4;
+
+    doc.addImage(
+      tempImg,
+      "JPEG",
+      12,
+      y,
+      180,
+      45,
+      undefined,
+      'FAST'
+    );
+
+    y += 54;
+  }
+
+  // HUM GRAPH
+
+  if (humChartInst) {
+
+    const humCanvas =
+      humChartInst.getRenderedCanvas({
+
+        pixelRatio: 1,
+
+        backgroundColor: '#ffffff'
+      });
+
+    const humImg =
+      humCanvas.toDataURL(
+        "image/jpeg",
+        0.55
+      );
+
+    doc.setFontSize(12);
+
+    doc.setTextColor(52, 96, 147);
+
+    doc.text("Humidity Graph", 14, y);
+
+    y += 4;
+
+    doc.addImage(
+      humImg,
+      "JPEG",
+      12,
+      y,
+      180,
+      45,
+      undefined,
+      'FAST'
+    );
+
+    y += 58;
+  }
+
+  // TABLE
+
+  const useExternal =
+    currentFilteredData.some(
+      r => r.temperature != null
+    );
+
+  const headers = ["Timestamp"];
+
+  if (useExternal) {
+
+    headers.push("Temperature (°C)");
+
+  } else {
+
+    headers.push("Internal Temp (°C)");
+  }
+
+  if (
+    currentFilteredData.some(
+      r => r.humidity != null
+    )
+  ) {
+
+    headers.push("Humidity (%)");
+  }
+
+  const rows =
+    currentFilteredData.map(r => {
+
+      const arr = [];
+
+      arr.push(
+        new Date(toMs(r.received_at))
+        .toLocaleString()
+      );
+
+      arr.push(
+        useExternal
+          ? Number(r.temperature ?? 0).toFixed(2)
+          : Number(r.internal_temperature ?? 0).toFixed(2)
+      );
+
+      if (
+        headers.includes("Humidity (%)")
+      ) {
+
+        arr.push(
+          r.humidity != null
+            ? Number(r.humidity).toFixed(2)
+            : "-"
+        );
+      }
+
+      return arr;
+    });
+
+  if (y > 240) {
+
+    doc.addPage();
+
+    y = 20;
+  }
+
+  doc.autoTable({
+
+    startY: y,
+
+    head: [headers],
+
+    body: rows,
+
+    styles: {
+
+      fontSize: 7,
+
+      cellPadding: 1.5,
+    },
+
+    headStyles: {
+
+      fillColor: [52, 96, 147],
+    },
+
+    alternateRowStyles: {
+
+      fillColor: [245, 247, 250]
+    },
+
+    margin: {
+
+      left: 10,
+      right: 10
+    }
+  });
+
+  doc.save(
+    `${mac}-${selectedDate}.pdf`
+  );
 }
 
 // ─────────────────────────────────────────────
 // INIT
 // ─────────────────────────────────────────────
 
+const now = new Date();
+
+const localDate = `${now.getFullYear()}-${
+  String(now.getMonth() + 1).padStart(2, "0")
+}-${
+  String(now.getDate()).padStart(2, "0")
+}`;
+
 document.getElementById("datePicker").value =
-  new Date().toISOString().split("T")[0];
+  localDate;
 
 document.getElementById("datePicker")
   .addEventListener("change", loadHistory);
