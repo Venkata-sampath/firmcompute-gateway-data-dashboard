@@ -357,7 +357,9 @@ const params =
   new URLSearchParams(window.location.search);
 
 const mac =
-  params.get("mac") || "";
+  (params.get("mac") || "")
+    .trim()
+    .toLowerCase();
 
 document.getElementById("title").innerText =
   `History – ${mac}`;

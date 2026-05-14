@@ -403,7 +403,7 @@ function renderCard(mac, data) {
 
 // ─── search / refresh ────────────────────────
 async function searchDevice() {
-  const mac = document.getElementById('mac').value.trim();
+  const mac = document.getElementById('mac').value.trim().toLowerCase();
   currentMac = mac;
   if (!mac) { alert('Please enter a MAC address.'); return; }
 
