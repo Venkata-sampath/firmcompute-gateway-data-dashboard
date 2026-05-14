@@ -244,6 +244,23 @@
         >
           ⬇ PDF
         </button>
+        
+        <select
+        id="sourceSelect"
+        class="form-select"
+        style="max-width:140px;"
+        onchange="loadHistory()"
+        >
+
+        <option value="hot">
+          Live DB
+        </option>
+
+        <option value="archive">
+          Archive DB
+        </option>
+
+      </select>
 
       </div>
 
@@ -659,9 +676,11 @@ async function loadHistory() {
   let data;
 
   try {
+  
+    const source = document.getElementById("sourceSelect").value;
 
     const res = await fetch(
-      `https://fc-ingest-worker.satyaramsl72.workers.dev/device/${mac}`
+      `https://fc-ingest-worker.satyaramsl72.workers.dev/device/${mac}?source=${source}&date=${selectedDate}`
     );
 
     data = await res.json();
@@ -691,16 +710,6 @@ async function loadHistory() {
       .classList.remove("d-none");
 
     return;
-  }
-
-  data.reverse();
-
-  if (selectedDate) {
-
-    data = data.filter(
-      row =>
-        toDateStr(row.received_at) === selectedDate
-    );
   }
 
   if (data.length === 0) {
