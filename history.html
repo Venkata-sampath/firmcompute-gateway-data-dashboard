@@ -661,7 +661,7 @@ async function loadHistory() {
   try {
 
     const res = await fetch(
-      `https://fc-dashboard-worker.satyaramsl72.workers.dev/device/${mac}`
+      `https://fc-dashboard-worker-2.satyaramsl72.workers.dev/device/${mac}`
     );
 
     data = await res.json();
@@ -728,8 +728,8 @@ function renderCharts(data) {
 
   const extRows =
     data.filter(r =>
-      r.temperature != null &&
-      !isNaN(r.temperature)
+      r.external_temperature != null &&
+      !isNaN(r.external_temperature)
     );
 
   const intRows =
@@ -752,7 +752,7 @@ function renderCharts(data) {
 
   const tempField =
     useExternal
-      ? "temperature"
+      ? "external_temperature"
       : "internal_temperature";
 
   // TEMP
@@ -959,7 +959,7 @@ async function downloadPDF() {
 
   const useExternal =
     currentFilteredData.some(
-      r => r.temperature != null
+      r => r.external_temperature != null
     );
 
   const headers = ["Timestamp"];
@@ -994,7 +994,7 @@ async function downloadPDF() {
 
       arr.push(
         useExternal
-          ? Number(r.temperature ?? 0).toFixed(2)
+          ? Number(r.external_temperature ?? 0).toFixed(2)
           : Number(r.internal_temperature ?? 0).toFixed(2)
       );
 

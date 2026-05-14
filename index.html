@@ -350,14 +350,14 @@ function renderCard(mac, data) {
   const humDivId  = `chart-hum-${safeId}`;
 
   const latest  = data[data.length - 1];
-  const extRows = data.filter(r => r.temperature          != null);
+  const extRows = data.filter(r => r.external_temperature != null);
   const intRows = data.filter(r => r.internal_temperature != null);
   const hasExt  = extRows.length > 0;
   const hasInt  = !hasExt && intRows.length > 0;
   const hasHum  = data.some(r => r.humidity       != null);
   const hasVolt = data.some(r => r.battery_voltage != null);
 
-  const curTemp = hasExt ? latest.temperature : hasInt ? latest.internal_temperature : null;
+  const curTemp = hasExt ? latest.external_temperature : hasInt ? latest.internal_temperature : null;
   const curHum  = hasHum  ? latest.humidity        : null;
   const curVolt = hasVolt ? latest.battery_voltage : null;
 
@@ -389,7 +389,7 @@ function renderCard(mac, data) {
   requestAnimationFrame(() => {
     if (hasExt || hasInt) {
       const rows   = (hasExt ? extRows : intRows).slice(-10);
-      const field  = hasExt ? 'temperature' : 'internal_temperature';
+      const field  = hasExt ? 'external_temperature' : 'internal_temperature';
       makeChart(tempDivId, rows.map(r => toTime(r.received_at)), rows.map(r => r[field]),
         '#f43f5e', 'rgba(251,113,133,0.55)', 'rgba(254,205,211,0.02)', 0.5, '°C');
     }
@@ -411,7 +411,7 @@ async function searchDevice() {
 
   let data;
   try {
-    const res = await fetch(`https://fc-dashboard-worker.satyaramsl72.workers.dev/device/${mac}`);
+    const res = await fetch(`https://fc-dashboard-worker-2.satyaramsl72.workers.dev/device/${mac}`);
     data = await res.json();
   } catch (e) {
     alert('Network error fetching device data.');
