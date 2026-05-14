@@ -708,21 +708,24 @@ async function loadHistory() {
 
   if (!Array.isArray(data) || data.length === 0) {
 
-    document.getElementById("emptyMsg")
-      .classList.remove("d-none");
+  document.getElementById("emptyMsg")
+    .classList.remove("d-none");
 
-    return;
-  }
+  // clear previous data
+  currentFilteredData = [];
 
-  if (data.length === 0) {
+  // destroy old charts
+  destroyCharts();
 
-    document.getElementById("emptyMsg")
-      .classList.remove("d-none");
+  // hide cards
+  document.getElementById("tempCard")
+    .style.display = "none";
 
-    destroyCharts();
+  document.getElementById("humidityCard")
+    .style.display = "none";
 
-    return;
-  }
+  return;
+}
 
   currentFilteredData = data;
 
