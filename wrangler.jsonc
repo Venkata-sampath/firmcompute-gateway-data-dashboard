@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "firmcompute-gateway-data-dashboard",
+  "name": "fc-dashboard",
   "compatibility_date": "2026-05-12",
   "observability": {
     "enabled": true
