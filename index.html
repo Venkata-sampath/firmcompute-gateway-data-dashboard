@@ -72,7 +72,9 @@
       color: #6b7280 !important;
     }
 
-    .stat-icon  { font-size: 1.4rem; }
+    .stat-icon  {
+      font-size: 1.4rem;
+    }
 
     .stat-value {
       font-size: 1.2rem;
@@ -86,17 +88,16 @@
       height: 150px;
     }
 
-    /* ── Search bar ── */
     .search-wrap {
       position: relative;
-      width: 260px;        /* compact fixed width */
+      width: 260px;
     }
 
     .search-wrap input {
       height: 42px;
       border-radius: 12px;
       border: 1px solid #d1d5db;
-      padding-right: 36px; /* room for ✕ */
+      padding-right: 36px;
       font-family: 'DM Mono', monospace;
       font-size: 0.88rem;
       width: 100%;
@@ -108,7 +109,6 @@
       outline: none;
     }
 
-    /* ✕ clear button inside the input */
     .clear-btn {
       position: absolute;
       right: 10px;
@@ -121,13 +121,14 @@
       cursor: pointer;
       color: #9ca3af;
       font-size: 1rem;
-      display: none;      /* hidden until there's text */
+      display: none;
       transition: color 0.15s;
     }
 
-    .clear-btn:hover { color: #374151; }
+    .clear-btn:hover {
+      color: #374151;
+    }
 
-    /* action buttons */
     .action-btn {
       height: 42px;
       min-width: 100px;
@@ -173,37 +174,70 @@
     }
 
     @media (max-width: 576px) {
-      .search-wrap  { width: 100%; }
-      .action-btn   { min-width: unset; }
-      .chart-wrap   { height: 220px; }
-      .stat-value   { font-size: 1rem; }
-      .timestamp    { font-size: 10px; }
-      .device-name  { word-break: break-all; }
-      .navbar-brand img { height: 30px !important; }
+
+      .search-wrap {
+        width: 100%;
+      }
+
+      .action-btn {
+        min-width: unset;
+      }
+
+      .chart-wrap {
+        height: 220px;
+      }
+
+      .stat-value {
+        font-size: 1rem;
+      }
+
+      .timestamp {
+        font-size: 10px;
+      }
+
+      .device-name {
+        word-break: break-all;
+      }
+
+      .navbar-brand img {
+        height: 30px !important;
+      }
     }
 
   </style>
+
 </head>
 
 <body>
 
-<!-- Navbar -->
 <nav class="navbar px-3 py-2 shadow-sm">
+
   <div class="container-fluid px-0">
-    <a class="navbar-brand d-flex align-items-center m-0" href="#">
-      <img src="logo.svg" alt="Firmcompute Logo" class="img-fluid" style="height:34px;" />
+
+    <a
+      class="navbar-brand d-flex align-items-center m-0"
+      href="#"
+    >
+
+      <img
+        src="logo.svg"
+        alt="Firmcompute Logo"
+        class="img-fluid"
+        style="height:34px;"
+      />
+
     </a>
+
   </div>
+
 </nav>
 
-<!-- Main Container -->
 <div class="container-fluid dashboard-container">
 
-  <!-- Search row -->
   <div class="d-flex flex-wrap align-items-center gap-2 mb-4">
 
-    <!-- Input with clear button -->
     <div class="search-wrap">
+
       <input
         type="text"
         id="mac"
@@ -212,20 +246,34 @@
         oninput="onMacInput()"
         onkeydown="if(event.key==='Enter') searchDevice()"
       />
+
       <button
         class="clear-btn"
         id="clearBtn"
         onclick="clearMac()"
         title="Clear"
-      >✕</button>
+      >
+        ✕
+      </button>
+
     </div>
 
-    <button class="btn btn-primary action-btn"           onclick="searchDevice()">Search</button>
-    <button class="btn btn-outline-secondary action-btn" onclick="refreshCurrentDevice()">Refresh</button>
+    <button
+      class="btn btn-primary action-btn"
+      onclick="searchDevice()"
+    >
+      Search
+    </button>
+
+    <button
+      class="btn btn-outline-secondary action-btn"
+      onclick="refreshCurrentDevice()"
+    >
+      Refresh
+    </button>
 
   </div>
 
-  <!-- Device Cards -->
   <div id="card-container"></div>
 
 </div>
@@ -233,220 +281,679 @@
 <script>
 
 const chartInstances = {};
+
 let currentMac = null;
 
-// ─── clear-button visibility ──────────────────
+// ─────────────────────────────────────
+
 function onMacInput() {
-  const val = document.getElementById('mac').value;
-  document.getElementById('clearBtn').style.display = val ? 'block' : 'none';
+
+  const val =
+    document.getElementById('mac').value;
+
+  document.getElementById('clearBtn')
+    .style.display = val ? 'block' : 'none';
 }
 
 function clearMac() {
+
   document.getElementById('mac').value = '';
-  document.getElementById('clearBtn').style.display = 'none';
+
+  document.getElementById('clearBtn')
+    .style.display = 'none';
+
   document.getElementById('mac').focus();
 }
 
-// ─── helpers ─────────────────────────────────
+// ─────────────────────────────────────
+
 function toTime(str) {
-  return new Date(str).toLocaleTimeString([], {
-    hour: '2-digit', minute: '2-digit', second: '2-digit'
-  });
+
+  return new Date(str)
+    .toLocaleTimeString([], {
+
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
 }
 
 function toDateTime(str) {
-  return new Date(str).toLocaleString([], {
-    month: 'numeric', day: 'numeric', year: 'numeric',
-    hour: '2-digit', minute: '2-digit', second: '2-digit'
-  });
+
+  return new Date(str)
+    .toLocaleString([], {
+
+      month: 'numeric',
+      day: 'numeric',
+      year: 'numeric',
+
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
 }
 
 function yAxisRange(values, minSpan) {
-  const lo   = Math.min(...values);
-  const hi   = Math.max(...values);
-  const mid  = (lo + hi) / 2;
-  const half = Math.max((hi - lo) / 2, minSpan / 2);
-  const pad  = Math.max(half * 0.18, 0.05);
+
+  const lo =
+    Math.min(...values);
+
+  const hi =
+    Math.max(...values);
+
+  const mid =
+    (lo + hi) / 2;
+
+  const half =
+    Math.max((hi - lo) / 2, minSpan / 2);
+
+  const pad =
+    Math.max(half * 0.18, 0.05);
+
   return {
-    min: parseFloat((mid - half - pad).toFixed(3)),
-    max: parseFloat((mid + half + pad).toFixed(3)),
+
+    min:
+      parseFloat((mid - half - pad).toFixed(3)),
+
+    max:
+      parseFloat((mid + half + pad).toFixed(3)),
   };
 }
 
-// ─── make echarts chart ───────────────────────
-function makeChart(divId, labels, values, lineColor, gradTop, gradBot, minSpan, unit) {
+// ─────────────────────────────────────
+
+function makeChart(
+  divId,
+  labels,
+  values,
+  lineColor,
+  gradTop,
+  gradBot,
+  minSpan,
+  unit
+) {
 
   if (chartInstances[divId]) {
+
     chartInstances[divId].dispose();
+
     delete chartInstances[divId];
   }
 
-  const chart = echarts.init(document.getElementById(divId));
+  const chart =
+    echarts.init(
+      document.getElementById(divId)
+    );
+
   chartInstances[divId] = chart;
 
-  const { min, max } = yAxisRange(values, minSpan);
+  const { min, max } =
+    yAxisRange(values, minSpan);
 
   chart.setOption({
+
     animation: false,
-    grid: { top: 10, bottom: 28, left: 50, right: 16, containLabel: false },
+
+    grid: {
+      top: 10,
+      bottom: 28,
+      left: 50,
+      right: 16,
+      containLabel: false
+    },
+
     tooltip: {
+
       trigger: 'axis',
-      formatter: p => `${p[0].axisValue}<br/>${p[0].marker} ${parseFloat(p[0].value).toFixed(2)} ${unit}`,
+
+      formatter: p =>
+        `${p[0].axisValue}<br/>${p[0].marker} ${parseFloat(p[0].value).toFixed(2)} ${unit}`,
+
       backgroundColor: '#fff',
+
       borderColor: '#e5e7eb',
-      textStyle: { color: '#374151', fontFamily: 'DM Mono', fontSize: 12 }
+
+      textStyle: {
+
+        color: '#374151',
+
+        fontFamily: 'DM Mono',
+
+        fontSize: 12
+      }
     },
+
     xAxis: {
+
       type: 'category',
+
       data: labels,
+
       boundaryGap: false,
-      axisLine: { show: false }, axisTick: { show: false }, splitLine: { show: false },
-      axisLabel: { fontFamily: 'DM Mono', fontSize: 10, color: '#9ca3af', interval: 'auto', margin: 8 }
-    },
-    yAxis: {
-      type: 'value', min, max,
-      splitLine: { lineStyle: { color: '#f3f4f6' } },
-      axisLine: { show: false }, axisTick: { show: false },
-      axisLabel: { fontFamily: 'DM Mono', fontSize: 10, color: '#9ca3af', margin: 12, formatter: v => v.toFixed(2) }
-    },
-    series: [{
-      type: 'line',
-      data: values,
-      smooth: 0.4,
-      showSymbol: true,
-      symbol: 'circle',
-      symbolSize: 6,
-      itemStyle: { color: lineColor, borderColor: '#fff', borderWidth: 1.5 },
-      lineStyle: { color: lineColor, width: 2 },
-      areaStyle: {
-        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-          { offset: 0, color: gradTop },
-          { offset: 1, color: gradBot }
-        ])
+
+      axisLine: {
+        show: false
       },
-      emphasis: { scale: true, itemStyle: { shadowBlur: 6, shadowColor: lineColor } }
+
+      axisTick: {
+        show: false
+      },
+
+      splitLine: {
+        show: false
+      },
+
+      axisLabel: {
+
+        fontFamily: 'DM Mono',
+
+        fontSize: 10,
+
+        color: '#9ca3af',
+
+        interval: 'auto',
+
+        margin: 8
+      }
+    },
+
+    yAxis: {
+
+      type: 'value',
+
+      min,
+
+      max,
+
+      splitLine: {
+
+        lineStyle: {
+          color: '#f3f4f6'
+        }
+      },
+
+      axisLine: {
+        show: false
+      },
+
+      axisTick: {
+        show: false
+      },
+
+      axisLabel: {
+
+        fontFamily: 'DM Mono',
+
+        fontSize: 10,
+
+        color: '#9ca3af',
+
+        margin: 12,
+
+        formatter: v => v.toFixed(2)
+      }
+    },
+
+    series: [{
+
+      type: 'line',
+
+      data: values,
+
+      smooth: 0.4,
+
+      showSymbol: true,
+
+      symbol: 'circle',
+
+      symbolSize: 6,
+
+      itemStyle: {
+
+        color: lineColor,
+
+        borderColor: '#fff',
+
+        borderWidth: 1.5
+      },
+
+      lineStyle: {
+
+        color: lineColor,
+
+        width: 2
+      },
+
+      areaStyle: {
+
+        color:
+          new echarts.graphic.LinearGradient(
+            0,
+            0,
+            0,
+            1,
+            [
+              {
+                offset: 0,
+                color: gradTop
+              },
+              {
+                offset: 1,
+                color: gradBot
+              }
+            ]
+          )
+      },
+
+      emphasis: {
+
+        scale: true,
+
+        itemStyle: {
+
+          shadowBlur: 6,
+
+          shadowColor: lineColor
+        }
+      }
     }]
   });
 
-  window.addEventListener('resize', () => chart.resize());
+  window.addEventListener(
+    'resize',
+    () => chart.resize()
+  );
 }
 
-// ─── clear card ──────────────────────────────
+// ─────────────────────────────────────
+
 function clearCard() {
-  Object.keys(chartInstances).forEach(id => {
-    chartInstances[id].dispose();
-    delete chartInstances[id];
-  });
-  document.getElementById('card-container').innerHTML = '';
+
+  Object.keys(chartInstances)
+    .forEach(id => {
+
+      chartInstances[id].dispose();
+
+      delete chartInstances[id];
+    });
+
+  document.getElementById('card-container')
+    .innerHTML = '';
 }
 
-// ─── render card ─────────────────────────────
+// ─────────────────────────────────────
+
 function renderCard(mac, data) {
 
   clearCard();
 
-  const safeId    = mac.replace(/[^a-zA-Z0-9]/g, '');
-  const tempDivId = `chart-temp-${safeId}`;
-  const humDivId  = `chart-hum-${safeId}`;
+  const safeId =
+    mac.replace(/[^a-zA-Z0-9]/g, '');
 
-  const latest  = data[data.length - 1];
-  const extRows = data.filter(r => r.external_temperature != null);
-  const intRows = data.filter(r => r.internal_temperature != null);
-  const hasExt  = extRows.length > 0;
-  const hasInt  = !hasExt && intRows.length > 0;
-  const hasHum  = data.some(r => r.humidity       != null);
-  const hasVolt = data.some(r => r.battery_voltage != null);
+  const tempDivId =
+    `chart-temp-${safeId}`;
 
-  const curTemp = hasExt ? latest.external_temperature : hasInt ? latest.internal_temperature : null;
-  const curHum  = hasHum  ? latest.humidity        : null;
-  const curVolt = hasVolt ? latest.battery_voltage : null;
+  const humDivId =
+    `chart-hum-${safeId}`;
+
+  const latest =
+    data[data.length - 1];
+
+  const extRows =
+    data.filter(r =>
+      r.external_temperature != null
+    );
+
+  const intRows =
+    data.filter(r =>
+      r.internal_temperature != null
+    );
+
+  const hasExt =
+    extRows.length > 0;
+
+  const hasInt =
+    !hasExt && intRows.length > 0;
+
+  const hasHum =
+    data.some(r =>
+      r.humidity != null
+    );
+
+  const hasVolt =
+    data.some(r =>
+      r.battery_voltage != null
+    );
+
+  const curTemp =
+    hasExt
+      ? latest.external_temperature
+      : hasInt
+        ? latest.internal_temperature
+        : null;
+
+  const curHum =
+    hasHum
+      ? latest.humidity
+      : null;
+
+  const curVolt =
+    hasVolt
+      ? latest.battery_voltage
+      : null;
 
   let statsHTML = '';
-  if (curTemp != null) statsHTML += `<div class="d-flex align-items-center gap-2"><span class="stat-icon">🌡️</span><span class="stat-value">${curTemp.toFixed(2)}&deg;C</span></div>`;
-  if (curHum  != null) statsHTML += `<div class="d-flex align-items-center gap-2"><span class="stat-icon">💧</span><span class="stat-value">${curHum.toFixed(2)}%</span></div>`;
-  if (curVolt != null) statsHTML += `<div class="d-flex align-items-center gap-2"><span class="stat-icon">🔋</span><span class="stat-value">${curVolt.toFixed(2)}V</span></div>`;
+
+  if (curTemp != null) {
+
+    statsHTML += `
+      <div class="d-flex align-items-center gap-2">
+        <span class="stat-icon">🌡️</span>
+        <span class="stat-value">
+          ${curTemp.toFixed(2)}&deg;C
+        </span>
+      </div>
+    `;
+  }
+
+  if (curHum != null) {
+
+    statsHTML += `
+      <div class="d-flex align-items-center gap-2">
+        <span class="stat-icon">💧</span>
+        <span class="stat-value">
+          ${curHum.toFixed(2)}%
+        </span>
+      </div>
+    `;
+  }
+
+  if (curVolt != null) {
+
+    statsHTML += `
+      <div class="d-flex align-items-center gap-2">
+        <span class="stat-icon">🔋</span>
+        <span class="stat-value">
+          ${curVolt.toFixed(2)}V
+        </span>
+      </div>
+    `;
+  }
 
   let chartsHTML = '';
-  if (hasExt || hasInt) chartsHTML += `<div class="chart-wrap mb-3" id="${tempDivId}"></div>`;
-  if (hasHum)           chartsHTML += `<div class="chart-wrap"      id="${humDivId}"></div>`;
 
-  const card = document.createElement('div');
-  card.className = 'card p-3 p-md-4 mb-4';
+  if (hasExt || hasInt) {
+
+    chartsHTML += `
+      <div
+        class="chart-wrap mb-3"
+        id="${tempDivId}"
+      ></div>
+    `;
+  }
+
+  if (hasHum) {
+
+    chartsHTML += `
+      <div
+        class="chart-wrap"
+        id="${humDivId}"
+      ></div>
+    `;
+  }
+
+  const card =
+    document.createElement('div');
+
+  card.className =
+    'card p-3 p-md-4 mb-4';
+
   card.innerHTML = `
+
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 mb-3">
-      <span class="device-name fs-4">${mac}</span>
+
+      <span class="device-name fs-4">
+        ${mac}
+      </span>
+
       <div class="d-flex flex-wrap align-items-center gap-2">
-        <button class="btn btn-sm btn-outline-primary" onclick="openHistoryPage('${mac}')">📅 History</button>
-        <span class="timestamp">${toDateTime(latest.received_at)}</span>
+
+        <button
+          class="btn btn-sm btn-outline-primary"
+          onclick="openHistoryPage('${mac}')"
+        >
+          📅 History
+        </button>
+
+        <span class="timestamp">
+          ${toDateTime(latest.received_at)}
+        </span>
+
       </div>
+
     </div>
-    <div class="d-flex flex-wrap align-items-center gap-4 mb-4">${statsHTML}</div>
+
+    <div class="d-flex flex-wrap align-items-center gap-4 mb-4">
+      ${statsHTML}
+    </div>
+
     ${chartsHTML}
+
   `;
 
-  document.getElementById('card-container').appendChild(card);
+  document.getElementById('card-container')
+    .appendChild(card);
 
   requestAnimationFrame(() => {
+
     if (hasExt || hasInt) {
-      const rows   = (hasExt ? extRows : intRows).slice(-10);
-      const field  = hasExt ? 'external_temperature' : 'internal_temperature';
-      makeChart(tempDivId, rows.map(r => toTime(r.received_at)), rows.map(r => r[field]),
-        '#f43f5e', 'rgba(251,113,133,0.55)', 'rgba(254,205,211,0.02)', 0.5, '°C');
+
+      const rows =
+        (hasExt ? extRows : intRows)
+        .slice(-10);
+
+      const field =
+        hasExt
+          ? 'external_temperature'
+          : 'internal_temperature';
+
+      makeChart(
+        tempDivId,
+        rows.map(r => toTime(r.received_at)),
+        rows.map(r => r[field]),
+        '#f43f5e',
+        'rgba(251,113,133,0.55)',
+        'rgba(254,205,211,0.02)',
+        0.5,
+        '°C'
+      );
     }
+
     if (hasHum) {
-      const hr = data.filter(r => r.humidity != null).slice(-10);
-      makeChart(humDivId, hr.map(r => toTime(r.received_at)), hr.map(r => r.humidity),
-        '#3b82f6', 'rgba(96,165,250,0.50)', 'rgba(219,234,254,0.02)', 0.5, '%');
+
+      const hr =
+        data.filter(r =>
+          r.humidity != null
+        ).slice(-10);
+
+      makeChart(
+        humDivId,
+        hr.map(r => toTime(r.received_at)),
+        hr.map(r => r.humidity),
+        '#3b82f6',
+        'rgba(96,165,250,0.50)',
+        'rgba(219,234,254,0.02)',
+        0.5,
+        '%'
+      );
     }
   });
 }
 
-// ─── search / refresh ────────────────────────
+// ─────────────────────────────────────
+
 async function searchDevice() {
-  const mac = document.getElementById('mac').value.trim().toLowerCase();
+
+  const mac =
+    document.getElementById('mac')
+    .value
+    .trim()
+    .toLowerCase();
+
   currentMac = mac;
-  if (!mac) { alert('Please enter a MAC address.'); return; }
 
-  sessionStorage.setItem('lastMac', mac);
+  if (!mac) {
 
-  let data;
-  try {
-    const res = await fetch(`https://fc-ingest-worker.satyaramsl72.workers.dev/device/${mac}`);
-    data = await res.json();
-  } catch (e) {
-    alert('Network error fetching device data.');
+    alert(
+      'Please enter a MAC address.'
+    );
+
     return;
   }
 
+  sessionStorage.setItem(
+    'lastMac',
+    mac
+  );
+
+  let data;
+
+  try {
+
+    const res =
+      await fetch(
+        `https://fc-ingest-worker.satyaramsl72.workers.dev/device/${mac}`
+      );
+
+    data =
+      await res.json();
+
+  } catch (e) {
+
+    alert(
+      'Network error fetching device data.'
+    );
+
+    return;
+  }
+
+  // ───────────────────────────────
+  // NO LIVE DATA CARD
+  // ───────────────────────────────
+
   if (!Array.isArray(data) || !data.length) {
-    alert('No data found for this device.');
+
+    clearCard();
+
+    const card =
+      document.createElement('div');
+
+    card.className =
+      'card p-3 p-md-4 mb-4';
+
+    card.innerHTML = `
+
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 mb-3">
+
+        <span class="device-name fs-4">
+          ${mac}
+        </span>
+
+        <div class="d-flex flex-wrap align-items-center gap-2">
+
+          <button
+            class="btn btn-sm btn-outline-primary"
+            onclick="openHistoryPage('${mac}')"
+          >
+            📅 History
+          </button>
+
+        </div>
+
+      </div>
+
+      <div class="d-flex flex-wrap align-items-center gap-4 mb-4">
+
+        <div class="d-flex align-items-center gap-2">
+          <span class="stat-icon">🌡️</span>
+          <span class="stat-value">--</span>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <span class="stat-icon">💧</span>
+          <span class="stat-value">--</span>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <span class="stat-icon">🔋</span>
+          <span class="stat-value">--</span>
+        </div>
+
+      </div>
+
+      <div class="text-muted fw-semibold">
+        No live data available.
+      </div>
+
+    `;
+
+    document
+      .getElementById('card-container')
+      .appendChild(card);
+
     return;
   }
 
   data.reverse();
+
   renderCard(mac, data);
 }
 
+// ─────────────────────────────────────
+
 async function refreshCurrentDevice() {
+
   if (!currentMac) return;
-  document.getElementById('mac').value = currentMac;
-  onMacInput(); // keep clear button in sync
+
+  document.getElementById('mac').value =
+    currentMac;
+
+  onMacInput();
+
   await searchDevice();
 }
 
 function openHistoryPage(mac) {
-  window.location.href = `history.html?mac=${mac}`;
+
+  window.location.href =
+    `history.html?mac=${mac}`;
 }
 
-setInterval(() => { if (currentMac) refreshCurrentDevice(); }, 60000);
+setInterval(() => {
 
-// ─── restore on back navigation ──────────────
+  if (currentMac) {
+
+    refreshCurrentDevice();
+  }
+
+}, 60000);
+
+// ─────────────────────────────────────
+
 window.addEventListener('load', () => {
-  const saved = sessionStorage.getItem('lastMac');
+
+  const saved =
+    sessionStorage.getItem('lastMac');
+
   if (saved) {
-    document.getElementById('mac').value = saved;
+
+    document.getElementById('mac').value =
+      saved;
+
     onMacInput();
+
     currentMac = saved;
+
     searchDevice();
   }
 });
