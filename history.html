@@ -894,15 +894,19 @@ async function downloadPDF() {
   if (tempChartInst) {
 
     const tempCanvas =
-      tempChartInst.getRenderedCanvas({
+    tempChartInst.getRenderedCanvas({
 
-        pixelRatio: 3,
+      pixelRatio: 3,
 
-        backgroundColor: '#ffffff'
-      });
+      backgroundColor: '#ffffff',
+
+      width: 1200,
+
+      height: 500
+    });
 
     const tempImg =
-      tempCanvas.toDataURL("image/jpeg");
+      tempCanvas.toDataURL("image/png");
 
     doc.setFontSize(12);
 
@@ -935,7 +939,11 @@ async function downloadPDF() {
 
         pixelRatio: 3,
 
-        backgroundColor: '#ffffff'
+        backgroundColor: '#ffffff',
+        
+        width: 1200,
+
+        height: 500
       });
 
     const humImg =
